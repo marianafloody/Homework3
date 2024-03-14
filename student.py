@@ -278,7 +278,15 @@ def matches_to_3d(points2d_1, points2d_2, M1, M2, threshold=1.0):
     points2d_2_inlier = np.array(points2d_2, copy=True) # only modify if using threshold
 
     # Solve for ground truth points
-
+    for i in range(len(points2d_1)):
+        m = points2d_1[i,0] * M1[2] - M1[0]
+        n = points2d_1[i,1] * M1[2] - M1[1]
+        o = points2d_2[i,0] * M2[2] - M2[0]
+        p = points2d_2[i,1] * M2[2] - M2[1]
+        a = np.array([m[:-1],n[:-1],o[:-1],p[:-1]])
+        x = np.array([m[-1],n[-1],o[-1],p[-1]])
+        x = x*-1
+        points3d_inlier[i] = np.linalg.lstsq(a,x)[0]
     ########################
 
     return points3d_inlier, points2d_1_inlier, points2d_2_inlier
